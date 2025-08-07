@@ -1,40 +1,44 @@
+resource "random_string" "suffix" {
+  length  = 5
+  upper   = false
+  special = false
+}
+
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-app-apim"
+  name     = "rg-app-apim-01"
   location = "Central India"
 }
 
 resource "azurerm_service_plan" "plan" {
-  name                = "app-service-plan"
+  name                = "app-service-plan-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Linux"
-  sku_name            = "P1v2"
+  sku_name            = "B1"
 }
 
 resource "azurerm_linux_web_app" "app" {
-  name                = "my-app-service-123"
+  name                = "my-app-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.plan.id
 
   site_config {
-    application_stack {
-      node_version = "18-lts"
-    }
+    linux_fx_version = "NODE|18-lts"
   }
 }
 
 resource "azurerm_api_management" "apim" {
-  name                = "my-apim-demo-456" # changed name to avoid conflict
+  name                = "my-apim-demo-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  publisher_name      = "Example Publisher"
-  publisher_email     = "publisher@example.com"
+  publisher_name      = "Demo Publisher"
+  publisher_email     = "demo@example.com"
   sku_name            = "Developer_1"
 }
 
 resource "azurerm_api_management_api" "api" {
-  name                = "demo-api"
+  name                = "demo-api-${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.rg.name
   api_management_name = azurerm_api_management.apim.name
   revision            = "1"
