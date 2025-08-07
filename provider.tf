@@ -1,5 +1,5 @@
 provider "azurerm" {
-  features = {}
+  features {}
 
   client_id       = jsondecode(base64decode(var.azure_credentials)).clientId
   client_secret   = jsondecode(base64decode(var.azure_credentials)).clientSecret
