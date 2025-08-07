@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "rg" {
   name     = "rg-app-apim"
-  location = "East US"
+  location = "Central India"
 }
 
 resource "azurerm_service_plan" "plan" {
