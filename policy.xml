@@ -1,0 +1,14 @@
+<policies>
+    <inbound>
+        <base />
+        <set-header name="X-Demo-Policy" exists-action="override">
+            <value>Applied</value>
+        </set-header>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+</policies>
