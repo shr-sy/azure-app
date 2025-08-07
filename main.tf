@@ -1,29 +1,33 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-demo-policy"
-  location = "Central India"
+  name     = "rg-app-apim"
+  location = "East US"
 }
 
 resource "azurerm_service_plan" "plan" {
-  name                = "plan-demo-policy"
+  name                = "app-service-plan"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Linux"
-  sku_name            = "B1"
+  sku_name            = "P1v2"
 }
 
 resource "azurerm_app_service" "app" {
-  name                = "app-policy-demo"
+  name                = "my-app-service-123"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_service_plan.plan.id
+
+  site_config {
+    linux_fx_version = "NODE|18-lts"
+  }
 }
 
 resource "azurerm_api_management" "apim" {
-  name                = "demo-apim-instance"
+  name                = "my-apim-demo-123"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  publisher_name      = "Demo Publisher"
-  publisher_email     = "demo@example.com"
+  publisher_name      = "Example Publisher"
+  publisher_email     = "publisher@example.com"
   sku_name            = "Developer_1"
 }
 
@@ -35,15 +39,9 @@ resource "azurerm_api_management_api" "api" {
   display_name        = "Demo API"
   path                = "demo"
   protocols           = ["https"]
+
   import {
     content_format = "swagger-link-json"
-    content_value  = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v2.0/json/petstore-expanded.json"
+    content_value  = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v2.0/json/petstore-simple.json"
   }
-}
-
-resource "azurerm_api_management_api_policy" "api_policy" {
-  api_name            = azurerm_api_management_api.api.name
-  api_management_name = azurerm_api_management.apim.name
-  resource_group_name = azurerm_resource_group.rg.name
-  xml_content         = file("${path.module}/policy.xml")
 }
