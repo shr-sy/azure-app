@@ -1,26 +1,31 @@
-name: Deploy Azure Infra
+name: Terraform Deploy to Azure
 
 on:
   push:
     branches:
       - main
 
+env:
+  TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
 
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -var="azure_credentials=${{ secrets.AZURE_CREDENTIALS }}"
+        run: terraform plan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="azure_credentials=${{ secrets.AZURE_CREDENTIALS }}"
+        run: terraform apply -auto-approve
