@@ -11,19 +11,21 @@ resource "azurerm_service_plan" "plan" {
   sku_name            = "P1v2"
 }
 
-resource "azurerm_app_service" "app" {
+resource "azurerm_linux_web_app" "app" {
   name                = "my-app-service-123"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_service_plan.plan.id
+  service_plan_id     = azurerm_service_plan.plan.id
 
   site_config {
-    linux_fx_version = "NODE|18-lts"
+    application_stack {
+      node_version = "18-lts"
+    }
   }
 }
 
 resource "azurerm_api_management" "apim" {
-  name                = "my-apim-demo-123"
+  name                = "my-apim-demo-456" # changed name to avoid conflict
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   publisher_name      = "Example Publisher"
