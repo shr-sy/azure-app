@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
         with:
           terraform_version: 1.8.3
 
-      - name: Login to Azure
+      - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -32,25 +32,13 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: Wait for App Service to be ready
-        run: |
-          for i in {1..10}; do
-            echo "Checking if app-policy-demo is available..."
-            if az webapp show --name app-policy-demo --resource-group rg-demo-policy &> /dev/null; then
-              echo "App found!"
-              break
-            fi
-            echo "App not found yet, retrying in 10 seconds..."
-            sleep 10
-          done
-
-      - name: Zip the app
+      - name: Zip App
         run: |
           mkdir output
           cd simple_app
           zip -r ../output/app.zip .
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: app-policy-demo
