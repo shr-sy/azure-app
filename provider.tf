@@ -1,14 +1,13 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.100"
-    }
-  }
+provider "azurerm" {
+  features = {}
 
-  required_version = ">= 1.8.0"
+  client_id       = jsondecode(base64decode(var.azure_credentials)).clientId
+  client_secret   = jsondecode(base64decode(var.azure_credentials)).clientSecret
+  tenant_id       = jsondecode(base64decode(var.azure_credentials)).tenantId
+  subscription_id = jsondecode(base64decode(var.azure_credentials)).subscriptionId
 }
 
-provider "azurerm" {
-  features {}
+variable "azure_credentials" {
+  type        = string
+  description = "Base64 encoded Azure credentials JSON"
 }
