@@ -5,7 +5,7 @@ resource "random_string" "suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-app-apim-01"
+  name     = "rg-app-apim-02"
   location = "Central India"
 }
 
