@@ -24,6 +24,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Remove API resource from state
+        run: terraform state rm azurerm_api_management_api.api || echo "Resource not in state, skipping"
+
       - name: Terraform Plan
         run: terraform plan
 
