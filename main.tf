@@ -1,14 +1,17 @@
+# Generate a random suffix to keep names unique
 resource "random_string" "suffix" {
   length  = 5
   upper   = false
   special = false
 }
 
+# Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = "rg-app-apim-02"
   location = "Central India"
 }
 
+# App Service Plan
 resource "azurerm_service_plan" "plan" {
   name                = "app-service-plan-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
@@ -17,6 +20,7 @@ resource "azurerm_service_plan" "plan" {
   sku_name            = "B1"
 }
 
+# Linux Web App
 resource "azurerm_linux_web_app" "app" {
   name                = "my-app-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
@@ -30,6 +34,7 @@ resource "azurerm_linux_web_app" "app" {
   }
 }
 
+# API Management Service
 resource "azurerm_api_management" "apim" {
   name                = "my-apim-demo-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
@@ -39,6 +44,7 @@ resource "azurerm_api_management" "apim" {
   sku_name            = "Developer_1"
 }
 
+# API Management API
 resource "azurerm_api_management_api" "api" {
   name                = "demo-api-${random_string.suffix.result}"
   resource_group_name = azurerm_resource_group.rg.name
